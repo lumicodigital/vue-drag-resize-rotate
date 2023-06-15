@@ -20,7 +20,7 @@
 <script>
   import Vector from '@minogin/vector'
 
-  const _ = require('lodash');
+  import _ from 'lodash';
 
   const stickSize = 8;
   const roStickSize = 20;
