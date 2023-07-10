@@ -501,6 +501,7 @@ export default {
 		bodyUp() {
 			this.bodyDrag = false;
 			if (this.dragged) {
+				this.dragged = false;
 				this.$emit('dragstop', this.getRect(), this.startRect);
 				this.$emit('change', this.getRect());
 			}
