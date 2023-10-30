@@ -116,14 +116,14 @@ export default {
 		resizeHandler: {
 			type: Function
 		},
-		holdTimeThreshold : {
+		holdTimeThreshold: {
 			type: Number,
 			default: 2000
 		},
-        dragThresholdPx : {
-            type: Number,
-            default: 5
-        }
+		dragThresholdPx: {
+			type: Number,
+			default: 5
+		}
 	},
 
 	data: function () {
@@ -373,6 +373,7 @@ export default {
 				this.stickUp(ev);
 			}
 			if (this.bodyDrag) {
+				this.cancelHoldTimer()
 				this.bodyUp(ev)
 			}
 		},
@@ -396,15 +397,13 @@ export default {
 
 			this.$emit('clicked', e);
 
-			if (this.holdTimer) {
-				clearTimeout(this.holdTimer);
-				this.holdTimer = null;
-			}
-			
+			this.cancelHoldTimer();
+
 			this.holdTimer = setTimeout(() => {
-                if(!this.dragged) {
-                    this.$emit('hold');
-                }
+
+				if (!this.dragged) {
+					this.$emit('hold');
+				}
 			}, this.holdTimeThreshold);
 
 			if (!this.draggable || !this.active) {
@@ -481,21 +480,21 @@ export default {
 					delta.y -= y2 - by2
 			}
 
-            if (Math.abs(delta.x) > this.dragThresholdPx || Math.abs(delta.y) > this.dragThresholdPx) {
-                this.cx = stickStartPos.cx + delta.x
-                this.cy = stickStartPos.cy + delta.y
+			if (Math.abs(delta.x) > this.dragThresholdPx || Math.abs(delta.y) > this.dragThresholdPx) {
+				this.cx = stickStartPos.cx + delta.x
+				this.cy = stickStartPos.cy + delta.y
 
-                if (this.dragHandler)
-                    this.setRect(this.dragHandler(this.getRect()))
+				if (this.dragHandler)
+					this.setRect(this.dragHandler(this.getRect()))
 
-                if (!this.dragStartEmitted) {
-                    this.$emit('dragstart', this.startRect);
-                    this.dragStartEmitted = true
-                }
+				if (!this.dragStartEmitted) {
+					this.$emit('dragstart', this.startRect);
+					this.dragStartEmitted = true
+				}
 
-                this.dragged = true
-                this.$emit('drag', this.getRect());
-            }
+				this.dragged = true
+				this.$emit('drag', this.getRect());
+			}
 		},
 
 		bodyUp() {
@@ -688,6 +687,13 @@ export default {
 				this.$emit('change', this.getRect());
 			}
 		},
+
+		cancelHoldTimer() {
+			if (this.holdTimer) {
+				clearTimeout(this.holdTimer);
+				this.holdTimer = null;
+			}
+		}
 	},
 }
 
